@@ -1,0 +1,1326 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+    --base: #ccdee2;
+    --surface: #afbdc9;
+    --overlay: #586a7b;
+    --text: #21271e;
+    --subtle: #2d3329;
+    --muted: #3e4439;
+    --very-muted: #575e51;
+
+    --accent: #8ea980;
+    --accent-washed: #c3adad; /* --accent blended halfway into --base */
+
+    --band: #e0ecee;         /* --base lifted toward white, for alternating section bands */
+    --page-margin: 1.25rem;  /* #main-page's inset — .page-band cancels it to reach the edges.
+                                0.75rem + the 0.5rem body margin that used to sit outside it */
+
+    /* Width the overhanging story tile occupies, reserved on the band it hangs over
+       so its text is never covered. Story width + its 0.5rem frame + 0.75rem gap. */
+    --story-gutter: 19.25rem;
+
+    /*
+     * Fluid typography — clamp(mobile-min, vw-scale, desktop-max)
+     * Previous maxes were desktop-sized and triggered too early (~530px).
+     * New maxes calibrated so text feels right at every screen width:
+     *   ~375px (small phone) → uses min
+     *   ~375-800px           → scales with vw
+     *   ~800px+ (desktop)    → caps at max
+     */
+    --h1: clamp(1.5rem,   6vw,   2rem);    /* hero title:      24px → 32px */
+    --h3: clamp(1.2rem,   4.5vw, 1.6rem);  /* section titles:  19px → 26px */
+    --h4: clamp(1rem,     3.8vw, 1.2rem);  /* card/sub titles: 16px → 19px */
+    --h5: clamp(1rem,     3.8vw, 1.2rem);  /* same:            16px → 19px */
+    --h6: clamp(0.875rem, 3.2vw, 1rem);    /* body text:       14px → 16px */
+    --h7: clamp(0.825rem, 3vw,   0.95rem); /* small text:      13px → 15px */
+    --p:  clamp(0.875rem, 3vw,   0.95rem); /* paragraph:       14px → 15px */
+}
+
+body {
+    margin: 0; /* the browser default 8px kept .page-band off the window edge */
+    background: var(--base);
+    color: var(--text);
+
+    font-family: "Nunito", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    line-height: 1.65; /* FIX: was 2.2rem (fixed), now unitless → scales with font size */
+}
+
+::selection {
+  background-color: #84ddedb0;
+}
+
+/* Controls are for pressing, not for selecting — a double tap should not highlight
+   their label. Covers <button>, the anchors styled as buttons, and the story badge. */
+button,
+.buy-button,
+.story-badge,
+.sticky-cta-button,
+.faq-question {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Images are content, not draggable objects. -webkit-user-drag covers Chrome and
+   Safari; Firefox ignores it, so script.js cancels dragstart as well. */
+img {
+    -webkit-user-drag: none;
+}
+
+.title {
+    font-size: var(--h1);
+    color: var(--text);
+    font-weight: 800;
+    line-height: 1;
+}
+
+.timeline-text-title {
+    font-size: var(--h3);
+    color: var(--text);
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+    margin-top: 2rem;
+}
+
+#buy-card-title {
+    font-size: var(--h3);
+    color: var(--text);
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+}
+
+.view-prices {
+    font-size: var(--h6);
+    color: var(--very-muted);
+    line-height: 1.22; /* FIX: was 0.22rem (typo) */
+    background: none;
+    border: none;
+    margin-bottom: 0.75rem;
+}
+
+.view-prices:hover{
+    text-decoration: underline;
+    cursor: pointer;
+    color: var(--subtle);
+    font-weight: 500;
+}
+
+#about-title {
+    font-weight: 800;
+    font-size: var(--h4);
+    line-height: 1.4; /* was 1.8rem (fixed) */
+}
+
+#about-description {
+    font-size: var(--h6);
+    line-height: 1.6; /* was 1.6rem (fixed) */
+    color: var(--subtle);
+}
+
+.text {
+    font-size: var(--p);
+}
+
+.description {
+    font-size: var(--h4);
+    color: var(--subtle);
+    line-height: 1.45; /* FIX: was 0.45rem (typo) */
+}
+
+.small-description {
+    font-size: var(--h6);
+    color: var(--subtle);
+}
+
+#main-page {
+    margin: var(--page-margin);
+}
+
+/*
+ * Full-width tinted band behind a group of sections.
+ * Cancels #main-page's side margin with a negative margin, then gives it back as
+ * padding — so the colour reaches the viewport edges while the content stays put.
+ * (Using width:100vw instead would overflow by the scrollbar's width, and fixing
+ * that with overflow-x:hidden would break the sticky .timeline-title dates.)
+ */
+.page-band {
+    background: var(--band);
+    margin-inline: calc(-1 * var(--page-margin));
+    padding: 2rem var(--page-margin);
+}
+
+/*
+ * The story tile hangs off #intro into the band directly below it. Reserve its width
+ * on that band so the timeline text wraps beside the tile instead of running under it.
+ * Because `article` is already capped at 50rem, this only narrows the text when the
+ * window is too tight to fit both — on a wide screen nothing moves.
+ */
+#intro + .page-band {
+    padding-right: calc(var(--page-margin) + var(--story-gutter));
+}
+
+/* The band's own padding provides the spacing; drop the edge children's margins */
+.page-band > *:first-child {
+    margin-top: 0;
+}
+
+.page-band > *:last-child {
+    margin-bottom: 0;
+}
+
+#buy {
+    flex: 1 1 auto;      /* takes the leftover height beside the photo */
+    display: flex;
+    align-items: center; /* centres the buttons in that space */
+    margin-top: 0.75rem; /* never closer to the card than #intro's column gap */
+}
+
+#buy-info {
+    display: flex;
+    gap: 0.75rem; /* matches the mosaic and #intro gaps */
+    color: var(--muted);
+}
+
+#info {
+    position: absolute;
+    top: 1.75rem;
+    left: 2rem;
+}
+
+#buy-free,#buy-paid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem
+}
+
+/* An <a> so the links are real links; these keep it looking like the button it was */
+.buy-button {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    font-family: inherit;
+    padding: 1rem 1rem 1rem 1rem;
+    background: var(--accent);
+    color: var(--text);
+    border-radius: 0.75rem;
+    outline: none;
+    border: none;
+    font-size: var(--h6);
+    font-weight: 700;
+}
+.buy-button:hover {
+    cursor: pointer;
+}
+.buy-button:active {
+    transform: scale(1.05);
+    transition:cubic-bezier(0.6, -0.28, 0.735, 0.045);
+}
+
+.small-title {
+    font-weight: 700;
+}
+
+.serif {
+    font-family: "Noto Serif", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variation-settings:
+    "wdth" 100;
+    font-style: italic;
+}
+
+#banner {
+    /* keeps its old inset now that body no longer supplies one */
+    width: calc(100% - 1rem);
+    margin: 0.5rem;
+    border-radius: 0.5rem;
+    object-fit: cover;           /* crops instead of squishing */
+    object-position: top center; /* keeps the sky/clouds visible when cropped */
+    min-height: clamp(8rem, 30vw, 16rem); /* never collapses on narrow screens */
+    display: block;
+}
+
+#avatar {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 12rem;
+    margin-top: 1rem;
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+}
+/* Bio card on the left, story pinned to the right edge; stacks on narrow screens.
+   No max-width here — the row spans the page so the story can sit at the far right. */
+#intro {
+    display: flex;
+    align-items: stretch;
+    gap: 0.75rem;
+}
+
+/* Left column: bio card on top, buy buttons below. Capped on its own so the text
+   keeps a readable measure even though the row itself is full width. */
+#intro-main {
+    flex: 0 1 45rem;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#about {
+    flex: 0 0 auto;
+    min-width: 0; /* must stay shrinkable, or the card overflows and the photo lands on top of it */
+    background: var(--surface);
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: row;
+}
+
+/*
+ * Photo mosaic: boy down the left, girl over fire on the right, filling one rectangle.
+ * The track sizes are chosen so each cell lands within ~0.3% of its photo's native
+ * ratio — boy.png 960x1280 (3/4), girl.png 1280x853 (3/2), fire.png 1280x960 (4/3) —
+ * so object-fit: cover has essentially nothing to crop.
+ */
+#photo-mosaic {
+    flex: 1 1 0;
+    min-width: 0;
+    align-self: flex-start; /* aspect-ratio drives the height, so don't let flex stretch it */
+    display: grid;
+    /* boy | girl over fire. Tracks solved so every cell matches its source exactly
+       — boy 3/4, girl 3/2, fire 4/3 — so nothing is cropped. */
+    grid-template-columns: 9.5625fr 8.4721fr;
+    grid-template-rows: 5.6458fr 6.3542fr;
+    gap: 0.75rem;
+    aspect-ratio: 18.78 / 12.75;
+}
+
+#intro-photo,
+#intro-photo-2,
+#intro-photo-3 {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    object-fit: cover;
+    border-radius: 0.75rem;
+    display: block;
+}
+
+#intro-photo {
+    grid-column: 1;
+    grid-row: 1 / 3; /* full height of the mosaic */
+}
+
+#intro-photo-2 {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+#intro-photo-3 {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+/*
+ * Latest Instagram story, back beside the bio card. --story-ratio is set by
+ * script.js from the real pixel dimensions of the fetched image, so the tile
+ * always matches its source exactly and nothing is ever cropped. 9/16 is the
+ * fallback for the first paint and for a story whose size is unknown.
+ */
+#intro-story {
+    flex: 0 0 auto;
+    align-self: flex-start;
+    margin-left: auto; /* pin to the right edge of the page */
+    /* Positioned + z-index so it paints above the .page-band that follows it, and a
+       negative bottom margin so it hangs past the intro into that band. The margin
+       is what it contributes to the row height, so the row does not grow. */
+    position: relative;
+    z-index: 2;
+    margin-bottom: -14rem;
+    display: block;
+    width: 18rem;
+    aspect-ratio: var(--story-ratio, 9 / 16);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    text-decoration: none;
+    /* Thick frame in the band colour. A spread-only box-shadow draws it *outside*
+       the tile, so it never covers the photo, and it follows border-radius in every
+       browser — unlike `outline`, which older WebKit renders with square corners. */
+    box-shadow: 0 0 0 0.5rem var(--base);
+}
+
+#story-image,
+#story-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* [hidden] needs to beat the display:block/flex set on these elements — an author
+   rule always wins over the browser's own [hidden] { display: none }. */
+#story-image[hidden],
+#story-video[hidden],
+.story-play[hidden] {
+    display: none;
+}
+
+.story-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2; /* above .story-link's stretched hit area */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--text);
+    cursor: pointer;
+    opacity: 0.9;
+    transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
+}
+
+.story-play:hover,
+.story-play:focus-visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.08);
+}
+
+.story-play svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* Audio toggle, tucked into the top corner so it never covers the play button */
+.story-audio-wrap {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.story-audio-wrap[hidden] {
+    display: none;
+}
+
+.story-audio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--text);
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+/*
+ * Volume slider — drops down out of the audio button on hover. writing-mode is the
+ * standard way to stand a range input up; slider-vertical covers older WebKit. The
+ * rtl direction puts full volume at the top.
+ */
+.story-volume {
+    writing-mode: vertical-lr;
+    direction: rtl;
+    -webkit-appearance: slider-vertical;
+    appearance: slider-vertical;
+    width: 1.1rem;
+    height: 4.5rem;
+    margin: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease-in-out;
+}
+
+.story-audio-wrap:hover .story-volume,
+.story-audio-wrap:focus-within .story-volume {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/*
+ * Seek bar along the bottom edge. --progress is set from script.js so the played
+ * portion is filled in; the badge sits clear of it at 1rem.
+ */
+.story-progress {
+    position: absolute;
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: 0.15rem;
+    z-index: 2;
+    width: auto;
+    height: 0.85rem;
+    margin: 0;
+    padding: 0;
+    background: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease-in-out;
+}
+
+.story-progress[hidden] {
+    display: none;
+}
+
+#intro-story:hover .story-progress,
+#intro-story:focus-within .story-progress,
+#intro-story.show-controls .story-progress {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.story-progress::-webkit-slider-runnable-track {
+    height: 0.25rem;
+    border-radius: 1rem;
+    background: linear-gradient(to right, var(--accent) var(--progress, 0%), #21271e66 var(--progress, 0%));
+}
+
+.story-progress::-moz-range-track {
+    height: 0.25rem;
+    border-radius: 1rem;
+    background: linear-gradient(to right, var(--accent) var(--progress, 0%), #21271e66 var(--progress, 0%));
+}
+
+.story-progress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0.7rem;
+    height: 0.7rem;
+    margin-top: -0.225rem; /* centres the thumb on the 0.25rem track */
+    border: none;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.story-progress::-moz-range-thumb {
+    width: 0.7rem;
+    height: 0.7rem;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.story-audio svg {
+    width: 1.15rem;
+    height: 1.15rem;
+}
+
+/* Only one of the two icon halves is ever drawn */
+.story-audio .story-audio-off {
+    display: none;
+}
+
+.story-audio.is-muted .story-audio-on {
+    display: none;
+}
+
+.story-audio.is-muted .story-audio-off {
+    display: block;
+}
+
+/*
+ * While the reel plays, the controls fade out of the way. They come back on hover,
+ * on keyboard focus, and — for touch, which has neither — when .show-controls is set
+ * by a tap on the tile.
+ */
+.story-play,
+.story-audio-wrap {
+    transition: opacity 300ms ease-in-out;
+}
+
+#intro-story.is-playing .story-play,
+#intro-story.is-playing .story-audio-wrap {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#intro-story.is-playing:hover .story-play,
+#intro-story.is-playing:hover .story-audio-wrap,
+#intro-story.is-playing:focus-within .story-play,
+#intro-story.is-playing:focus-within .story-audio-wrap,
+#intro-story.is-playing.show-controls .story-play,
+#intro-story.is-playing.show-controls .story-audio-wrap {
+    opacity: 0.9;
+    pointer-events: auto;
+}
+
+/* The stretched profile link would swallow taps meant to bring the controls back */
+#intro-story.is-playing .story-link::after {
+    display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .story-play,
+    .story-audio-wrap,
+    .story-volume,
+    .story-progress {
+        transition: none;
+    }
+}
+
+/* The badge doubles as the link; ::after makes the whole tile clickable */
+.story-link {
+    text-decoration: none;
+}
+
+.story-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+.story-badge {
+    position: absolute;
+    left: 0.35rem;
+    right: 0.35rem;
+    bottom: 1.1rem; /* clears the seek bar below it */
+    padding: 0.4rem 0.3rem;
+    border-radius: 0.5rem;
+    background: var(--accent-washed);
+    color: var(--text);
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.5;
+    text-align: center;
+}
+
+
+/* Smaller tile and a shorter drop as the page narrows; the gutter follows the width */
+@media (max-width: 64rem) {
+    :root {
+        --story-gutter: 15.25rem; /* 14rem tile + 0.5rem frame + 0.75rem gap */
+    }
+
+    #intro-story {
+        width: 14rem;
+        margin-bottom: -8rem;
+    }
+}
+
+/* Below this the story no longer overhangs, so the band needs no reserved gutter. */
+@media (max-width: 52rem) {
+    :root {
+        --story-gutter: 0rem;
+    }
+
+    #intro-story {
+        width: 12rem;
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 40rem) {
+    /* Card beside story on the first line, buttons wrapping onto the second. */
+    #intro {
+        flex-wrap: wrap;
+    }
+
+    /* The story is a sibling of #intro-main while the card and buttons live inside it,
+       so they can never share a row. display:contents drops #intro-main's box and
+       promotes its children into this flex container, where they can. */
+    #intro-main {
+        display: contents;
+    }
+
+    #about {
+        order: 1;
+        flex: 1 1 0;
+        min-width: 0;
+        flex-direction: column; /* avatar above the text, not beside it */
+    }
+
+    #intro-story {
+        order: 2;
+        flex: 1.2 1 0; /* a little wider than the card, as in the design */
+        min-width: 0;
+        margin-left: 0;
+        width: auto;
+        /* A 9:16 tile grows ~1.8x its width in height; without this cap it runs to
+           35rem at the top of this range and the card stretches to match it. */
+        max-width: 14rem;
+    }
+
+    /* 100% basis forces the buttons onto their own line below the pair */
+    #buy {
+        order: 3;
+        flex: 0 0 100%;
+        margin-top: 0; /* #intro's row-gap already spaces it */
+    }
+
+    .about-text {
+        margin-top: 0;
+    }
+}
+
+.about-text {
+    margin-top: -0.75rem;
+    line-height: 1.4; /* was 1rem (fixed and too tight) */
+    margin-left: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.timeline-dot {
+	--size: .5rem;
+	width: var(--size);
+	height: var(--size);
+	margin: calc((1rem - var(--size))/2);
+	border-radius: 50%;
+	background-color: var(--text);
+	flex-grow: 0;
+}
+
+.timeline-line {
+	flex-grow: 1;
+	margin: 8px 0;
+	width: 3px;
+	background-color: var(--text);
+}
+
+article {
+	display: flex;
+	gap: 30px;
+	width: 100%;
+	max-width: 50rem;
+}
+
+section {
+	display: flex;
+	align-items: flex-start;
+	gap: 30px;
+}
+
+.timeline-title {
+	position: sticky;
+	top: 20px;
+    font-weight: 800;
+}
+
+.timeline-content {
+	display: flex;
+	flex-direction: column;
+    line-height: 1.5; /* was 1.4rem (fixed) */
+}
+
+aside {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+main {
+	padding-bottom: 2rem;
+}
+
+.image-slider {
+  position: relative;
+  width: 400px;
+  max-width: 100%;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.image-slider-track {
+  display: flex;
+  transition: transform 400ms ease-in-out;
+}
+
+/* Images keep their intrinsic aspect ratio — no cropping, no stretching. */
+.image-slider-section {
+  flex: 0 0 100%;
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 200ms ease-in-out, background 200ms ease-in-out;
+}
+
+.slider-arrow:hover,
+.slider-arrow:focus-visible {
+  opacity: 1;
+  background: var(--overlay);
+}
+
+.slider-arrow svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.slider-arrow-prev {
+  left: 0.75rem;
+}
+
+.slider-arrow-next {
+  right: 0.75rem;
+}
+
+.image-slider-container {
+  display: flex;
+  justify-content: start;
+  align-items: start;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+
+.facts-text {
+    line-height: 1.5; /* was 1.4rem (fixed) */
+}
+
+.facts-text *,
+.facts-text *::before,
+.facts-text *::after {
+    box-sizing: border-box;
+    font-size: var(--h6);
+    max-width: 45rem;
+}
+
+.icon-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.icon-list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    line-height: 1.6;
+    font-size: var(--h6); /* was hardcoded 1rem */
+}
+
+.icon-list-item:not(:last-child) {
+    margin-bottom: 1rem;
+}
+
+.icon-list-item .icon {
+    width: 24px;
+    height: 24px;
+    color: var(--sil-accent-color);
+    flex-shrink: 0;
+    margin-top: .1em;
+}
+
+.icon-label {
+    font-weight: 800;
+}
+
+/* Pair of personal photos — 3/4 matches their native 960x1280, so nothing is cropped */
+.photo-strip {
+    display: flex;
+    gap: 0.75rem;
+    max-width: 30rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.photo-strip-item {
+    flex: 1 1 0;
+    min-width: 0;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: 0.75rem;
+    display: block;
+}
+
+@media (max-width: 32rem) {
+    .photo-strip {
+        flex-direction: column;
+        max-width: 20rem;
+    }
+}
+
+#buy-cards {
+    display: inline-flexbox;
+}
+
+.card-1, .card-2, .card-3, .card-4, .card-5{
+    background: var(--surface);
+    margin-bottom: 1rem;
+    padding: 1rem;
+    max-width: 30rem;
+    border-radius: 0.75rem;
+}
+
+.card-title {
+    font-size: var(--h5);
+    font-weight: 800;
+}
+
+.card-info {
+    line-height: 1.6; /* was 1.6rem (fixed) */
+    margin-bottom: 0.75rem;
+}
+
+.card-bottom {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.card-price {
+    font-weight: 800;
+    background: var(--accent);
+    padding: 0.22rem 0.75rem 0.22rem 0.75rem;
+    border-radius: 0.75rem;
+}
+
+.card-time {
+    margin-top: 0.22rem;
+}
+
+/* Методы работы */
+.methods {
+    max-width: 45rem;
+}
+
+.methods strong {
+    font-weight: 800; /* matches .icon-label and the card titles */
+    color: var(--text);
+}
+
+.methods-lead {
+    font-size: var(--h6);
+    line-height: 1.6;
+    margin: 0 0 1rem;
+}
+
+.methods-text {
+    font-size: var(--h6);
+    line-height: 1.6;
+    color: var(--subtle);
+    margin: 0 0 1rem;
+}
+
+.methods-subtitle {
+    font-size: var(--h6);
+    font-weight: 800;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+/* The five methods as pills — easier to scan than a bulleted list */
+.methods-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 0 0 1.5rem;
+}
+
+.methods-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--accent-washed);
+    border-radius: 0.75rem;
+    padding: 0.5rem 1rem;
+    font-size: var(--h7);
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.method-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex-shrink: 0;
+    fill: var(--text); /* the paths carry no fill attribute, so they'd default to pure black */
+}
+
+/*
+ * Форматы работы — one tall card beside a stacked pair, as in the reference:
+ * two light cards and one filled with the accent.
+ */
+/* Cards on the left, the photo mosaic on the right */
+.formats-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    max-width: 76rem;
+}
+
+.formats {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.formats-column {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.format-card-tall {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.format-card {
+    background: var(--surface);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+}
+
+.format-card-accent {
+    background: var(--accent);
+}
+
+.format-card-title {
+    font-size: var(--h5);
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 0.75rem;
+}
+
+.format-card-text {
+    font-size: var(--h6);
+    line-height: 1.6;
+    color: var(--subtle);
+    margin: 0 0 0.75rem;
+}
+
+.format-card-text:last-child {
+    margin-bottom: 0;
+}
+
+.format-card strong {
+    font-weight: 800;
+    color: var(--text);
+}
+
+/* Stack the mosaic under the cards before they get too narrow to read */
+@media (max-width: 64rem) {
+    .formats-layout {
+        flex-direction: column;
+    }
+
+    #photo-mosaic {
+        width: 100%;
+        max-width: 40rem;
+    }
+}
+
+@media (max-width: 40rem) {
+    .formats {
+        flex-direction: column;
+    }
+
+    .formats-column {
+        width: 100%;
+    }
+}
+
+/*
+ * Closing contact section. A dark band closes the page and makes the booking
+ * buttons the last thing on screen; --muted is the darkest green already in the
+ * palette, so it reads as a footer without introducing a new colour.
+ */
+.contacts {
+    background: var(--overlay);
+    color: var(--base);
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    margin-bottom: calc(-1 * var(--page-margin)); /* run to the bottom of the page */
+}
+
+.contacts-title {
+    font-size: var(--h3);
+    font-weight: 800;
+    margin-bottom: 1.25rem;
+}
+
+.contacts-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 3rem;
+}
+
+.contact-button {
+    display: block;
+    padding: 1rem 1.5rem;
+    border: 2px solid var(--surface);
+    border-radius: 1rem;
+    background: var(--surface);
+    color: var(--text);
+    font-size: var(--h6);
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    transition: transform 150ms ease-in-out;
+}
+
+/* Outlined variant, so the two buttons read as a pair without a second hue */
+.contact-button-alt {
+    background: none;
+    color: var(--band);
+}
+
+.contact-button:hover {
+    cursor: pointer;
+}
+
+.contacts-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1rem 3rem;
+}
+
+.contacts-heading {
+    font-size: var(--h3);
+    font-weight: 800;
+}
+
+.contacts-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.contacts-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: var(--h6);
+    line-height: 1.4;
+}
+
+.contacts-item a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.contacts-item a:hover {
+    text-decoration: underline;
+}
+
+.contact-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+    color: var(--base);
+}
+
+@media (max-width: 40rem) {
+    .contact-button {
+        flex: 1 1 100%;
+    }
+}
+
+/*
+ * Sticky call to action. Slides up once the intro is scrolled past and slides away
+ * again at the last section — script.js toggles .is-visible. Hidden state also drops
+ * visibility and pointer events so it is not clickable or focusable while off-screen.
+ */
+#sticky-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    padding: 0.75rem var(--page-margin);
+    background: var(--overlay);
+    box-shadow: 0 -0.25rem 1rem #21271e26;
+    transform: translateY(110%);
+    visibility: hidden;
+    transition: transform 300ms ease-in-out, visibility 300ms;
+}
+
+#sticky-cta.is-visible {
+    transform: translateY(0);
+    visibility: visible;
+}
+
+.sticky-cta-label {
+    font-size: var(--h6);
+    font-weight: 800;
+    color: var(--base);
+}
+
+.sticky-cta-button {
+    display: block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    background: var(--accent-washed);
+    color: var(--text);
+    font-size: var(--h6);
+    font-weight: 800;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.sticky-cta-button:hover {
+    cursor: pointer;
+}
+
+.sticky-cta-button:active {
+    transform: scale(1.05);
+}
+
+.sticky-cta-note {
+    font-size: var(--h7);
+    color: var(--band);
+}
+
+/* On a phone the button is the only part worth the space */
+@media (max-width: 40rem) {
+    #sticky-cta {
+        gap: 0.75rem;
+        padding: 0.6rem 0.75rem;
+    }
+
+    .sticky-cta-label,
+    .sticky-cta-note {
+        display: none;
+    }
+
+    .sticky-cta-button {
+        flex: 1 1 auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #sticky-cta {
+        transition: none;
+    }
+}
+
+/* Частые вопросы — native <details>, so it works without JS */
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 45rem;
+    margin-bottom: 2rem;
+}
+
+.faq-item {
+    background: var(--surface);
+    border-radius: 0.75rem;
+    padding: 1rem;
+}
+
+.faq-question {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: var(--h5);
+    font-weight: 800;
+    line-height: 1.4;
+    cursor: pointer;
+    list-style: none; /* hides the default triangle */
+}
+
+.faq-question::-webkit-details-marker {
+    display: none; /* Safari */
+}
+
+.faq-question::after {
+    content: "+";
+    color: var(--muted);
+    font-size: 1.4em;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.faq-item[open] .faq-question::after {
+    content: "\2212"; /* − */
+}
+
+.faq-answer {
+    margin-top: 0.75rem;
+    font-size: var(--h6);
+    line-height: 1.6;
+    color: var(--subtle);
+}
+
+/* Answers that need paragraphs and bullets rather than one run of text */
+.faq-answer p {
+    margin: 0 0 0.75rem;
+}
+
+.faq-answer p:last-child {
+    margin-bottom: 0;
+}
+
+.faq-answer ul {
+    margin: 0 0 0.75rem;
+    padding-left: 1.25rem; /* room for the marker, with wrapped lines hanging under the text */
+}
+
+.faq-answer li {
+    margin-bottom: 0.25rem;
+}
+
+/* Progressive enhancement: browsers without ::details-content just snap open */
+@supports selector(details::details-content) {
+    .faq-list {
+        interpolate-size: allow-keywords; /* inherited — lets block-size animate to auto */
+    }
+
+    .faq-item::details-content {
+        block-size: 0;
+        overflow: hidden;
+        transition: block-size 300ms ease, content-visibility 300ms;
+        transition-behavior: allow-discrete;
+    }
+
+    .faq-item[open]::details-content {
+        block-size: auto;
+    }
+}

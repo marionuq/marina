@@ -1,0 +1,57 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  # Stories expire after 24h, so rebuild regularly to keep the tile current.
+  # Times are UTC and can be delayed under load — treat this as "roughly hourly".
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch: # lets you trigger a rebuild by hand from the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; queue instead of cancelling a half-finished one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # Refresh the Instagram story. Never fails the build: if the token has expired
+      # or nothing is live, the site still deploys with the previous still in place.
+      - name: Fetch latest story
+        continue-on-error: true
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_PROFILE_URL: https://www.instagram.com/marina_yastrebova_psy
+        run: bun run story
+
+      - name: Build
+        run: bun run build
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

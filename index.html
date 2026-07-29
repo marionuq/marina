@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marina</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div id="nav-bar">
+
+    </div>
+    <img src="images/banner.png" id="banner">
+    <div id="main-page">
+        <div id="info">
+            <span class="title">Понимание и </span>
+            <span class="serif title">гармония</span>
+            <span class="description" style="white-space: pre-line">
+                работа с детскими и 
+                подростковыми проблемами
+            </span>
+        </div>
+        
+        <div id="intro">
+            <div id="intro-main">
+                <div id="about">
+                    <img src="images/avatar.png" id="avatar">
+                    <div class="about-text">
+                        <span id="about-title" style="white-space: pre-line">
+                            Меня зовут
+                            Марина Ястребова
+                        </span>
+                        <span id="about-description">Я развиваюсь в области детской психологии более 15 лет, работаю с детьми, подростками и взрослыми по коррекции тревожно-фобических расстройств.</span>
+                    </div>
+                </div>
+
+                <div id="buy">
+                    <div id="buy-info">
+                        <div id="buy-free">
+                            <a class="buy-button" href="https://wa.me/31642721712?text=" target="_blank" rel="noopener">Записаться в WhatsApp</a>
+                    <button class="view-prices" onclick="document.getElementById('buy-card-title').scrollIntoView({ behavior: 'smooth' })">Посмотреть цены <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 640 640"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M297.4 566.6C309.9 579.1 330.2 579.1 342.7 566.6L502.7 406.6C515.2 394.1 515.2 373.8 502.7 361.3C490.2 348.8 469.9 348.8 457.4 361.3L352 466.7L352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 466.7L182.6 361.3C170.1 348.8 149.8 348.8 137.3 361.3C124.8 373.8 124.8 394.1 137.3 406.6L297.3 566.6z"/></svg></button>
+                        </div>
+                        <div id="buy-paid">
+                            <a class="buy-button" href="https://t.me/onemarion" target="_blank" rel="noopener">Записаться в Telegram</a>
+                    <button class="view-prices" onclick="document.getElementById('buy-card-title').scrollIntoView({ behavior: 'smooth' })">Посмотреть цены <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 640 640"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M297.4 566.6C309.9 579.1 330.2 579.1 342.7 566.6L502.7 406.6C515.2 394.1 515.2 373.8 502.7 361.3C490.2 348.8 469.9 348.8 457.4 361.3L352 466.7L352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 466.7L182.6 361.3C170.1 348.8 149.8 348.8 137.3 361.3C124.8 373.8 124.8 394.1 137.3 406.6L297.3 566.6z"/></svg></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Media is replaced by scripts/fetch-story.ts, which also writes
+                 story-data.js. A <div>, not an <a>, because the play button cannot
+                 be nested inside a link; .story-link stretches to cover the tile. -->
+            <div id="intro-story">
+                <img src="images/story.jpg" id="story-image" alt="Последняя история в Instagram">
+                <!-- No `muted`: playback only starts from a click, so sound is allowed.
+                     script.js falls back to muted if the browser refuses anyway. -->
+                <video id="story-video" src="images/story.mp4" poster="images/story.jpg"
+                       playsinline loop preload="none" hidden></video>
+                <button type="button" id="story-play" class="story-play" aria-label="Воспроизвести" hidden>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+                </button>
+                <!-- Button plus the volume slider it reveals, so hovering either keeps
+                     the group open — a gap between them would make it flicker shut. -->
+                <div class="story-audio-wrap" id="story-audio-wrap" hidden>
+                    <button type="button" id="story-audio" class="story-audio" aria-label="Выключить звук">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 9.5v5h3.5L12 18V6L7.5 9.5H4z"/>
+                            <g class="story-audio-on">
+                                <path d="M15.5 9.2a4 4 0 0 1 0 5.6"/>
+                                <path d="M18 6.8a7.5 7.5 0 0 1 0 10.4"/>
+                            </g>
+                            <path class="story-audio-off" d="M16 9.5l5 5M21 9.5l-5 5"/>
+                        </svg>
+                    </button>
+                    <input type="range" id="story-volume" class="story-volume"
+                           min="0" max="1" step="0.01" value="1" aria-label="Громкость">
+                </div>
+
+                <input type="range" id="story-progress" class="story-progress"
+                       min="0" max="100" step="0.1" value="0" aria-label="Перемотка" hidden>
+                <a class="story-badge story-link" href="https://www.instagram.com/marina_yastrebova_psy" target="_blank" rel="noopener">Instagram</a>
+            </div>
+        </div>
+
+        <div class="page-band">
+        <div class="timeline-text-title">Образование</div>
+
+        <section>
+            <div class="timeline-title">2005</div>
+            <div class="timeline-content">
+                <article>
+                    <aside>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                    </aside>
+
+                    <main>
+                        <span class="timeline-info">Московский Городской Психолого-педагогический университет, факультет "Психология образования" по специальности "Психология"</span>
+                    </main>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <div class="timeline-title">2022</div>
+            <div class="timeline-content">
+                <article>
+                    <aside>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                    </aside>
+
+                    <main>
+                        <span class="timeline-info">АНО ДПО "Институт прикладной психологии в социальной сфере"
+- "Гештальт-терапия при работе с детскими психосоматозами, травмами, страхами и агрессией"</span>
+                    </main>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <div class="timeline-title">2022</div>
+            <div class="timeline-content">
+                <article>
+                    <aside>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                    </aside>
+
+                    <main>
+                        <span class="timeline-info">"Консультативно-терапевтическая работа в области диагностики и коррекции детско-родительских отношений"</span>
+                    </main>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <div class="timeline-title">2023</div>
+            <div class="timeline-content">
+                <article>
+                    <aside>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                    </aside>
+
+                    <main>
+                        <span class="timeline-info">АНОДПО Открытый институт профессиональных инноваций, «Интегративный подход в работе психолога с детьми и родителями»</span>
+                    </main>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <div class="timeline-title">2023</div>
+            <div class="timeline-content">
+                <article>
+                    <aside>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                    </aside>
+
+                    <main>
+                        <span class="timeline-info">Ассоциация КПТ «Когнитивно-поведенческая терапия детей и подростков»</span>
+                    </main>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <div class="timeline-title">2023</div>
+            <div class="timeline-content">
+                <article>
+                    <aside>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                    </aside>
+
+                    <main>
+                        <span class="timeline-info">Школа эмоционального интеллекта и психотерапии «Личностно-ориентированная (реконструктивная) психотерапия: теолрия и практика метода</span>
+                    </main>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <div class="timeline-title">2023</div>
+            <div class="timeline-content">
+                <article>
+                    <aside>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                    </aside>
+
+                    <main>
+                        <span class="timeline-info">Школа эмоционального интеллекта и психотерапии «Комплексная психологическая коррекция тревожно-фобических расстройств»</span>
+                    </main>
+                </article>
+            </div>
+        </section>
+
+        </div>
+
+        <div class="timeline-text-title">Опыт работы</div>
+
+        <section>
+            <div class="timeline-title">2005</div>
+            <div class="timeline-content">
+                <article>
+                    <aside>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                    </aside>
+
+                    <main>
+                        <span class="timeline-info">НОУ СОШ "Частная  школа "Гармония", дети с 1 по 11 класс (Диагностика и коррекция познавательных процессов, диагностика и коррекция трудностей в учебной деятельности, организация групповых тренингов по развитию навыков коммуникации).Консультации с родителями по вопросам развития и воспитания детей</span>
+                    </main>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <div class="timeline-title">2003</div>
+            <div class="timeline-content">
+                <article>
+                    <aside>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                    </aside>
+
+                    <main>
+                        <span class="timeline-info">Волонтер психологической помощи Телефона Доверия в Евангелическо-лютеранском приходе г. Москва</span>
+                    </main>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <div class="timeline-title">2008</div>
+            <div class="timeline-content">
+                <article>
+                    <aside>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                    </aside>
+
+                    <main>
+                        <span class="timeline-info">Развивающий центр «Перово», психолог-консультант. Проводила групповые занятия с детьми и подростками с использованием методов и приемов телесно-ориентированной психотерапии</span>
+                    </main>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <div class="timeline-title">2020</div>
+            <div class="timeline-content">
+                <article>
+                    <aside>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                    </aside>
+
+                    <main>
+                        <span class="timeline-info">Частная практика</span>
+                    </main>
+                </article>
+            </div>
+        </section>
+        
+        <div class="image-slider-container">
+            <div class="image-slider">
+                <div class="image-slider-track">
+                    <img class="image-slider-section" src="images/image-1.png" alt="Сертификат 1">
+                    <img class="image-slider-section" src="images/image-2.png" alt="Сертификат 2">
+                    <img class="image-slider-section" src="images/image-3.png" alt="Сертификат 3">
+                </div>
+
+                <button type="button" class="slider-arrow slider-arrow-prev" aria-label="Предыдущее изображение">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 4.5 8 12l7.5 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button type="button" class="slider-arrow slider-arrow-next" aria-label="Следующее изображение">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 4.5 16 12l-7.5 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="page-band">
+        <div class="timeline-text-title">Специализация</div>
+        <div class="facts-text">
+            <ul class="icon-list">
+                <li class="icon-list-item">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 640 640"><path d="M305 151.1L320 171.8L335 151.1C360 116.5 400.2 96 442.9 96C516.4 96 576 155.6 576 229.1L576 231.7C576 343.9 436.1 474.2 363.1 529.9C350.7 539.3 335.5 544 320 544C304.5 544 289.2 539.4 276.9 529.9C203.9 474.2 64 343.9 64 231.7L64 229.1C64 155.6 123.6 96 197.1 96C239.8 96 280 116.5 305 151.1z"/></svg>
+                    <span class="icon-text"><span class="icon-label">Эмоциональные расстройства</span> - тревожность, депрессия, страхи, ОКР, фобии, навязчивые мысли и сопровождение детей и подростков с СДВГ</span>                </li>
+                <li class="icon-list-item">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 640 640"><path d="M144 128C144 92.7 172.7 64 208 64L432 64C467.3 64 496 92.7 496 128L496 512C496 547.3 467.3 576 432 576L208 576C172.7 576 144 547.3 144 512L144 128zM208 128L208 432L432 432L432 128L208 128zM320 536C337.7 536 352 521.7 352 504C352 486.3 337.7 472 320 472C302.3 472 288 486.3 288 504C288 521.7 302.3 536 320 536z"/></svg>
+                    <span class="icon-text"><span class="icon-label">Проблемы поведения и саморегуляции</span> - агрессия, капризы, непослушание, трудности с управлением эмоциями</span>                </li>
+                <li class="icon-list-item">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 640 640"><path d="M536.3 294.5C546.7 383 492.9 466.6 408.1 493.5C323.3 520.4 231.5 483.2 189.2 404.8C117.2 407.8 51.8 365 26 299.3C23.4 292.7 24.1 285.3 27.9 279.4C31.7 273.5 38.1 269.7 45.1 269.3L141.2 263.3L117.4 187.4C111.1 167.4 115.2 145.5 128.4 129.1C141.6 112.7 162.1 104.1 182.9 106.1C235.1 111.1 269.7 110.9 286.9 105.5C304.1 100.1 332 80.7 371 47.1C386.9 33.4 408.7 28.6 428.8 34.4C448.9 40.2 464.9 55.7 471.2 75.8L494.8 151L575.6 101.3C581.6 97.6 589 97 595.5 99.7C602 102.4 606.8 108 608.4 114.9C624.6 183.1 596 255.2 536.3 294.4zM290.5 539.9C305.6 547.4 312 565.7 304.7 580.9C297.4 596.1 279.3 602.8 264 595.8L220.1 574.8C205 567.3 198.6 549 205.9 533.8C213.2 518.6 231.3 511.9 246.6 518.9L290.4 539.9zM596.6 409.7C611.4 418.1 616.6 437 608.2 451.9L584.3 494.3C575.6 508.6 557.2 513.5 542.7 505.2C528.2 496.9 522.8 478.6 530.7 463.8L554.6 421.4C558.6 414.3 565.3 409 573.2 406.8C581.1 404.6 589.5 405.6 596.6 409.7z"/></svg>
+                    <span class="icon-text"><span class="icon-label">Развитие, обучение и социализация</span> - трудности в учёбе, общении и адаптации в коллективе</span>                </li>
+                <li class="icon-list-item">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 640 640"><path d="M298.2 72.6C310.5 61.2 329.5 61.2 341.7 72.6L432 156.3L432 144C432 126.3 446.3 112 464 112L496 112C513.7 112 528 126.3 528 144L528 245.5L565.8 280.6C575.4 289.6 578.6 303.5 573.8 315.7C569 327.9 557.2 336 544 336L528 336L528 512C528 547.3 499.3 576 464 576L176 576C140.7 576 112 547.3 112 512L112 336L96 336C82.8 336 71 327.9 66.2 315.7C61.4 303.5 64.6 289.5 74.2 280.6L298.2 72.6zM376 320C376 289.1 350.9 264 320 264C289.1 264 264 289.1 264 320C264 350.9 289.1 376 320 376C350.9 376 376 350.9 376 320zM208 496C208 504.8 215.2 512 224 512L416 512C424.8 512 432 504.8 432 496C432 451.8 396.2 416 352 416L288 416C243.8 416 208 451.8 208 496z"/></svg>
+                    <span class="icon-text"><span class="icon-label">Семейные ситуации и отношения</span> - развод родителей, сиблинговые конфликты, вопросы воспитания</span>
+                </li>
+                <li class="icon-list-item">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 640 640"><path d="M376 88C376 57.1 350.9 32 320 32C289.1 32 264 57.1 264 88C264 118.9 289.1 144 320 144C350.9 144 376 118.9 376 88zM400 300.7L446.3 363.1C456.8 377.3 476.9 380.3 491.1 369.7C505.3 359.1 508.3 339.1 497.7 324.9L427.2 229.9C402 196 362.3 176 320 176C277.7 176 238 196 212.8 229.9L142.3 324.9C131.8 339.1 134.7 359.1 148.9 369.7C163.1 380.3 183.1 377.3 193.7 363.1L240 300.7L240 576C240 593.7 254.3 608 272 608C289.7 608 304 593.7 304 576L304 416C304 407.2 311.2 400 320 400C328.8 400 336 407.2 336 416L336 576C336 593.7 350.3 608 368 608C385.7 608 400 593.7 400 576L400 300.7z"/></svg>
+                    <span class="icon-text"><span class="icon-label">Самооценка и психосоматика</span> - неуверенность в себе, психосоматические расстройства, адаптация</span>                </li>
+            </ul>
+        </div>
+
+        <div class="photo-strip">
+            <img class="photo-strip-item" src="images/chiken.png" alt="Фигурки цыплят в гнезде, слепленные из пластилина" loading="lazy">
+            <img class="photo-strip-item" src="images/cake.png" alt="Домашний торт со свечами на столе в саду" loading="lazy">
+        </div>
+        </div>
+
+        <div class="timeline-text-title">Методы работы</div>
+
+        <div class="methods">
+            <p class="methods-lead">Я придерживаюсь <strong>интегративного мультимодального подхода</strong>, сочетая методы разных направлений.</p>
+
+            <p class="methods-text">Это позволяет подобрать именно тот формат, который подходит вашему ребёнку и вашей семье.</p>
+
+            <div class="methods-subtitle">В своей практике я использую:</div>
+            <ul class="methods-list">
+                <li class="methods-item">
+                    <svg class="method-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M256 96C256 78.3 270.3 64 288 64L352 64C369.7 64 384 78.3 384 96L384 160C384 177.7 369.7 192 352 192L288 192C270.3 192 256 177.7 256 160L256 96zM288 448L352 448C369.7 448 384 462.3 384 480L384 544C384 561.7 369.7 576 352 576L288 576C270.3 576 256 561.7 256 544L256 480C256 462.3 270.3 448 288 448zM480 448L544 448C561.7 448 576 462.3 576 480L576 544C576 561.7 561.7 576 544 576L480 576C462.3 576 448 561.7 448 544L448 480C448 462.3 462.3 448 480 448zM384 256L448 256C465.7 256 480 270.3 480 288L480 352C480 369.7 465.7 384 448 384L384 384C366.3 384 352 369.7 352 352L352 288C352 270.3 366.3 256 384 256zM201.4 252.1C213.9 239.6 234.2 239.6 246.7 252.1L292 297.4C304.5 309.9 304.5 330.2 292 342.7L246.7 388C234.2 400.5 213.9 400.5 201.4 388L156.1 342.6C143.6 330.1 143.6 309.8 156.1 297.3L201.4 252zM96 448L160 448C177.7 448 192 462.3 192 480L192 544C192 561.7 177.7 576 160 576L96 576C78.3 576 64 561.7 64 544L64 480C64 462.3 78.3 448 96 448z"/></svg>
+                    Игровые формы и арт-терапию
+                </li>
+                <li class="methods-item">
+                    <svg class="method-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M539.7 272C542.4 276.7 544 282.2 544 288C544 305.7 529.7 320 512 320L506.9 320L484.5 533C481.9 557.4 461.3 576 436.7 576L203.1 576C178.5 576 157.9 557.5 155.3 533L133.1 320L128 320C110.3 320 96 305.7 96 288C96 282.2 97.6 276.7 100.3 272L539.7 272zM320 48C399.5 48 464 112.5 464 192L464 224L416 224L416 192C416 139 373 96 320 96C267 96 224 139 224 192L224 224L176 224L176 192C176 112.5 240.5 48 320 48z"/></svg>
+                    Песочную терапию
+                </li>
+                <li class="methods-item">
+                    <svg class="method-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M64 416L64 192C64 139 107 96 160 96L480 96C533 96 576 139 576 192L576 416C576 469 533 512 480 512L360 512C354.8 512 349.8 513.7 345.6 516.8L230.4 603.2C226.2 606.3 221.2 608 216 608C202.7 608 192 597.3 192 584L192 512L160 512C107 512 64 469 64 416z"/></svg>
+                    Психоанализ
+                </li>
+                <li class="methods-item">
+                    <svg class="method-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M184 120C184 89.1 209.1 64 240 64L264 64C281.7 64 296 78.3 296 96L296 544C296 561.7 281.7 576 264 576L232 576C202.2 576 177.1 555.6 170 528C169.3 528 168.7 528 168 528C123.8 528 88 492.2 88 448C88 430 94 413.4 104 400C84.6 385.4 72 362.2 72 336C72 305.1 89.6 278.2 115.2 264.9C108.1 252.9 104 238.9 104 224C104 179.8 139.8 144 184 144L184 120zM456 120L456 144C500.2 144 536 179.8 536 224C536 239 531.9 253 524.8 264.9C550.5 278.2 568 305 568 336C568 362.2 555.4 385.4 536 400C546 413.4 552 430 552 448C552 492.2 516.2 528 472 528C471.3 528 470.7 528 470 528C462.9 555.6 437.8 576 408 576L376 576C358.3 576 344 561.7 344 544L344 96C344 78.3 358.3 64 376 64L400 64C430.9 64 456 89.1 456 120z"/></svg>
+                    Когнитивно-поведенческое направление (СБТ)
+                </li>
+                <li class="methods-item">
+                    <svg class="method-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M27 182L55.5 343.7C69.5 423.2 131.8 485.5 211.3 499.5L224 501.7C207.5 473.1 196.9 441 193.4 407.2L169.3 411.5C159.6 413.2 150.5 405.7 152.4 396C157.2 371.3 171.5 349.4 192.1 335.1L192.1 260.5C190.7 261.3 189.1 261.8 187.4 262.1L124.4 273.2C115.7 274.7 107.1 268.8 108.5 260.1C111.6 240.5 126.9 224.1 147.6 220.4C164.8 217.4 181.5 223.9 192.2 236.2L192.2 213.5C192.2 191 199.1 161.1 224.5 140.1C250.5 118.6 292.2 96.2 349.4 85.9C318.9 69.6 263.1 53.9 185.6 67.5C105.3 81.7 57.6 117.6 35.5 143.6C26.5 154.1 24.7 168.5 27.1 182.1zM240 202.7L240 377.5C240 458.2 290.5 530.4 366.4 557.9L394.1 568C408.2 573.1 423.7 573.1 437.8 568L465.6 558C541.5 530.4 592 458.3 592 377.5L592 202.7C592 195.8 589.9 188.9 585 184.1C562.4 161.6 506.8 128.1 416 128.1C325.2 128.1 269.6 161.7 247 184.1C242.1 189 240 195.8 240 202.7zM306.1 389.8C304.7 382.8 313.1 378.8 318.8 383.2C345.7 403.8 379.4 416.1 416 416.1C452.6 416.1 486.2 403.8 513.2 383.2C518.9 378.8 527.3 382.8 525.9 389.8C515.8 441.2 470.4 480.1 416 480.1C361.6 480.1 316.2 441.3 306.1 389.8zM306.6 288.3C313.2 269.5 331 256 352 256C373 256 390.9 269.5 397.4 288.3C400.3 296.7 392.9 304 384 304L320 304C311.2 304 303.7 296.6 306.6 288.3zM512 304L448 304C439.2 304 431.7 296.6 434.6 288.3C441.1 269.5 459 256 480 256C501 256 518.9 269.5 525.4 288.3C528.3 296.7 520.9 304 512 304z"/></svg>
+                    Психодраму
+                </li>
+            </ul>
+
+            <p class="methods-text">Такой подход помогает учитывать возрастные и личные особенности ребёнка, динамику семьи и глубину вашего запроса.</p>
+
+            <p class="methods-text"><strong>С родителями</strong> я провожу консультации, где мы подробно разбираем ситуацию и ищем шаги для поддержки ребёнка.</p>
+
+            <p class="methods-text">По отдельному запросу я также работаю со взрослыми в формате <strong>индивидуальной терапии детско-родительских отношений</strong>.</p>
+        </div>
+
+        <div class="page-band">
+        <div class="timeline-text-title">Форматы работы</div>
+
+        <div class="formats-layout">
+        <div class="formats">
+            <div class="format-card format-card-tall">
+                <div class="format-card-title">С родителями</div>
+                <p class="format-card-text">Первая встреча проходит без ребёнка и длится 90 минут.</p>
+                <p class="format-card-text">Важно присутствие обоих родителей: это помогает услышать разные взгляды, собрать полную картину и выстроить единый план работы.</p>
+                <p class="format-card-text">Мы обсуждаем запрос, историю развития ребёнка и особенности семейной ситуации.</p>
+                <p class="format-card-text">В дальнейшем встречи с родителями проводятся регулярно по ходу работы над запросом — это помогает обсуждать динамику, поддерживать изменения и находить решения вместе.</p>
+                <p class="format-card-text"><strong>Грамотно выстроенная терапия и психокоррекция помогают преодолеть сложности, стать более уверенным и счастливым.</strong></p>
+            </div>
+
+            <div class="formats-column">
+                <div class="format-card">
+                    <div class="format-card-title">Семья вместе</div>
+                    <p class="format-card-text">Совместные встречи родителя и ребёнка, а также расширенные семейные встречи (90 минут), когда важно услышать всех участников.</p>
+                    <p class="format-card-text">Такой формат помогает наладить контакт, прожить эмоции и укрепить отношения в семье.</p>
+                </div>
+
+                <div class="format-card format-card-accent">
+                    <div class="format-card-title">С детьми и подростками</div>
+                    <p class="format-card-text">На индивидуальных встречах я помогаю детям и подросткам выражать чувства, справляться с трудностями и находить новые способы взаимодействия с миром — через игру, творчество и доверительный разговор.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="photo-mosaic">
+            <img src="images/boy.png" id="intro-photo" alt="Улыбающийся мальчик на прогулке в горах" loading="lazy">
+            <img src="images/girl.png" id="intro-photo-2" alt="Улыбающаяся девочка в вязаной шапке" loading="lazy">
+            <img src="images/fire.png" id="intro-photo-3" alt="Дети и взрослые у костра на природе" loading="lazy">
+        </div>
+        </div>
+
+        </div>
+
+        <div id="buy-card-title">Услуги и цены</div>
+
+        <div id="buy-cards">
+            <div class="card-1">
+                <div class="card-title">Установочная консультация</div>
+                <div class="card-info">Короткая встреча-знакомство, чтобы обсудить как строится процесс, задать волнующие вопросы касательно работы над запросом и понять, подходит ли вам дальнейшее сотрудничество</div>
+                <div class="card-bottom">
+                    <div class="card-price">Бесплатно</div>
+                    <div class="card-time">20 минут</div>
+                </div>
+            </div>
+            <div class="card-2">
+                <div class="card-title">Первая консультация для родителей</div>
+                <div class="card-info">Мы подробно обсуждаем ваш запрос, историю развития и здоровья ребенка, а также особенности семейной ситуации.
+Важно присутствие обоих родителей — это помогает собрать полную картину и наметить план дальнейшей работы.</div>
+                <div class="card-bottom">
+                    <div class="card-price">150€</div>
+                    <div class="card-time">90 минут</div>
+                </div>
+            </div>
+            <div class="card-3">
+                <div class="card-title">Индивидуальная сессия</div>
+                <div class="card-info">С ребенком или родителем</div>
+                <div class="card-bottom">
+                    <div class="card-price">105€</div>
+                    <div class="card-time">60 минут</div>
+                </div>
+            </div>
+            <div class="card-3">
+                <div class="card-title">Расширенная встреча</div>
+                <div class="card-info">Семейная встреча родители/дети, Встреча по запросу.</div>
+                <div class="card-bottom">
+                    <div class="card-price">150€</div>
+                    <div class="card-time">90 минут</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-text-title">Пакеты встреч для регулярной работы</div>
+
+        <div class="card-4">
+            <div class="card-bottom">
+                <div class="card-time">4 сессии</div>
+                <div class="card-time">90 минут</div>
+                <div class="card-time">5 недель</div>
+                <div class="card-price">150€</div>
+            </div>
+        </div>
+        <div class="card-5">
+            <div class="card-bottom">
+                <div class="card-time">4 сессии</div>
+                <div class="card-time">90 минут</div>
+                <div class="card-time">5 недель</div>
+                <div class="card-price">150€</div>
+            </div>
+        </div>
+
+        <div class="page-band">
+        <div class="timeline-text-title">Частые вопросы</div>
+
+        <div class="faq-list">
+            <details class="faq-item">
+                <summary class="faq-question">С детьми какого возраста вы работаете?</summary>
+                <div class="faq-answer">Я работаю с детьми и подростками от 3 до 18 лет.
+При этом важно понимать, что особенности развития и поведения маленьких детей во многом корректируются через работу с родителями. Поэтому мои самые маленькие клиенты, которые приходят на индивидуальные встречи, обычно находятся в возрасте около 4,5–5 лет.
+С детьми младшего возраста работа чаще всего строится через родителей или совместно с родителями.</div>
+            </details>
+
+            <details class="faq-item">
+                <summary class="faq-question">С чего начинается работа?</summary>
+                <div class="faq-answer">Работа начинается с консультации с родителями.
+На первой встрече мы подробно обсуждаем ваш запрос, собираем анамнез, говорим об истории развития ребенка, особенностях семьи и том контексте, в котором он растет. Это помогает увидеть ситуацию целиком и выбрать наиболее подходящий формат дальнейшей работы.</div>
+            </details>
+
+            <details class="faq-item">
+                <summary class="faq-question">Почему на первую консультацию нужны оба родителя?</summary>
+                <div class="faq-answer">Я всегда стараюсь привлекать к работе всех взрослых, которые непосредственно участвуют в воспитании ребенка.
+Для меня важно услышать не только родителя, который обратился за помощью, но и второго родителя. У каждого есть свое понимание ситуации, свои взгляды на воспитание, свои наблюдения. Это позволяет собрать более полную картину и найти общее направление работы.
+Кроме того, мне важно, чтобы оба родителя понимали, что происходит в процессе терапии, какие задачи мы решаем и каким образом каждый из них может поддержать изменения дома.</div>
+            </details>
+
+            <details class="faq-item">
+                <summary class="faq-question">Нужно ли родителям присутствовать на сессиях ребёнка?</summary>
+                <div class="faq-answer">Да, но не всегда.
+В моей практике есть семейные сессии, в которых участвует вся семья. Они помогают увидеть, как строится взаимодействие между членами семьи: как родители общаются с ребенком, как дети взаимодействуют друг с другом, как ребенок реагирует на каждого из родителей.
+При этом на индивидуальных встречах с ребенком родители обычно не присутствуют.
+Это связано не с тем, что родители как-то негативно влияют на ребенка. Просто поведение ребенка естественным образом меняется в присутствии значимого взрослого. Когда ребенок остается один на один со специалистом, ему легче проявлять себя свободно, а психолог получает возможность лучше увидеть его особенности и внутренний мир.</div>
+            </details>
+
+            <details class="faq-item">
+                <summary class="faq-question">Как часто проходят встречи и сколько длится работа?</summary>
+                <div class="faq-answer">Если речь идет о психологической работе с эмоциональными трудностями, встречи обычно проходят один раз в неделю.
+Если проводится нейропсихологическая коррекция совместно с нейропсихологом или специалистом по сенсорной интеграции, занятия проходят два раза в неделю. Такая работа больше похожа на тренировку определенных функций и навыков, поэтому ей необходима регулярность.
+Чтобы познакомиться с ребенком, установить контакт, провести диагностику и дать родителям содержательную обратную связь с рекомендациями, обычно требуется около четырех встреч.
+После этого мы вместе принимаем решение о дальнейшей работе.
+Если задача носит консультационный характер, этих четырех встреч может быть достаточно. Если речь идет о глубокой терапевтической работе, она может продолжаться столько, сколько требует запрос ребенка и семьи.
+Нейропсихологическая программа обычно рассчитана минимум на 8 месяцев.</div>
+            </details>
+
+            <details class="faq-item">
+                <summary class="faq-question">Что делать, если ребёнок не хочет идти к психологу?</summary>
+                <div class="faq-answer">
+                    <p>Причины могут быть самыми разными.</p>
+                    <p>Иногда ребенок уже имел неприятный опыт общения со специалистом. Иногда он представляет работу психолога как место, где его будут заставлять говорить о неприятном или оценивать. Бывает и так, что ребенок слышал от других детей негативные представления о психологах.</p>
+                    <p>Как правило, уже после первой встречи детям становится понятно, как устроена работа. Они видят, что терапия строится на доверии, уважении и контакте, а не на принуждении.</p>
+                    <p>С маленькими детьми мы очень много играем, поэтому для них встречи становятся естественным и интересным процессом.</p>
+                    <p>Если же после двух-трех встреч ребенок по-прежнему категорически не хочет приходить, важно разобраться в причине. Возможно, сейчас не самое подходящее время для такой работы. А иногда просто не сложился личный контакт именно с этим специалистом.</p>
+                    <p>Это совершенно нормально. Контакт между психологом и ребенком — один из важнейших факторов эффективности терапии. Если ребенок не чувствует себя рядом со специалистом достаточно комфортно, можно попросить рекомендации и подобрать другого психолога.</p>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary class="faq-question">С какими запросами вы работаете?</summary>
+                <div class="faq-answer">
+                    <p>Я работаю с широким кругом детских и подростковых запросов, среди которых:</p>
+                    <ul>
+                        <li>тревожность, страхи и эмоциональные трудности;</li>
+                        <li>самооценка и неуверенность в себе;</li>
+                        <li>сложности общения со сверстниками;</li>
+                        <li>адаптация к эмиграции;</li>
+                        <li>семейные конфликты;</li>
+                        <li>отношения между братьями и сестрами;</li>
+                        <li>переживание развода родителей;</li>
+                        <li>подростковые кризисы;</li>
+                        <li>СДВГ;</li>
+                        <li>трудности внимания и саморегуляции;</li>
+                        <li>агрессия;</li>
+                        <li>нарушения сна;</li>
+                        <li>эмоциональная нестабильность;</li>
+                        <li>вопросы детско-родительских отношений.</li>
+                    </ul>
+                    <p>Если вы не нашли свой запрос в этом списке, вы всегда можете написать мне — мы вместе обсудим вашу ситуацию.</p>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary class="faq-question">Соблюдается ли конфиденциальность?</summary>
+                <div class="faq-answer">Да, безусловно.
+Вся информация, полученная во время работы, является конфиденциальной.
+Материалы, которые появляются в процессе работы с ребенком и семьей, используются исключительно для анализа и сопровождения вашего случая.
+При необходимости они могут обсуждаться с коллегами только в профессиональных целях и только для повышения качества помощи ребенку.
+Если какие-либо материалы используются в образовательных целях или для публикаций в социальных сетях, это всегда происходит только с письменного согласия родителей.</div>
+            </details>
+
+            <details class="faq-item">
+                <summary class="faq-question">Как записаться на консультацию?</summary>
+                <div class="faq-answer">Записаться можно, написав мне в WhatsApp или Telegram.
+Я отвечу на ваши вопросы, помогу подобрать удобное время и расскажу, какой формат работы подойдет именно в вашей ситуации.</div>
+            </details>
+        </div>
+        </div>
+
+        <div class="page-band contacts" id="last-section">
+            <div class="contacts-title">Записаться на консультацию</div>
+
+            <div class="contacts-buttons">
+                <a class="contact-button" href="https://wa.me/31642721712?text=" target="_blank" rel="noopener">Записаться в WhatsApp</a>
+                <a class="contact-button contact-button-alt" href="https://t.me/onemarion" target="_blank" rel="noopener">Записаться в Telegram</a>
+            </div>
+
+            <div class="contacts-info">
+                <div class="contacts-heading">Контакты</div>
+
+                <ul class="contacts-list">
+                    <li class="contacts-item">
+                        <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/>
+                            <circle cx="12" cy="10" r="2.5"/>
+                        </svg>
+                        <a href="https://maps.google.com/?q=Pieter+van+der+Doesstraat+63,+1056+VD+Amsterdam,+Netherlands" target="_blank" rel="noopener">Pieter van der Doesstraat 63, 1056 VD Amsterdam, Netherlands</a>
+                    </li>
+
+                    <li class="contacts-item">
+                        <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21.5 11.5a8.5 8.5 0 0 1-12.6 7.4L3.5 20.5l1.7-5.2A8.5 8.5 0 1 1 21.5 11.5z"/>
+                            <path d="M8.6 9.2c.3 2.1 2.3 4.6 4.6 5.4"/>
+                        </svg>
+                        <a href="https://wa.me/31642721712" target="_blank" rel="noopener">+31 6 4272 1712</a>
+                    </li>
+
+                    <li class="contacts-item">
+                        <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="3" y="3" width="18" height="18" rx="5"/>
+                            <circle cx="12" cy="12" r="4"/>
+                            <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/>
+                        </svg>
+                        <a href="https://www.instagram.com/marina_yastrebova_psy" target="_blank" rel="noopener">@marina_yastrebova_psy</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Sticky call to action. Hidden until the intro scrolls away, and hidden again
+         once the last section is reached — script.js drives the .is-visible class. -->
+    <div id="sticky-cta" aria-hidden="true">
+        <span class="sticky-cta-label">Установочная консультация</span>
+        <a class="sticky-cta-button" href="https://wa.me/31642721712?text=" target="_blank" rel="noopener" tabindex="-1">Записаться бесплатно</a>
+        <span class="sticky-cta-note">20 минут</span>
+    </div>
+
+    <!-- Deliberately classic scripts, not type="module": module scripts are blocked
+         on file://, which silently disables all JS when the page is opened from disk.
+         story-data.js sets window.STORY and is rewritten by scripts/fetch-story.ts. -->
+    <script src="./story-data.js"></script>
+    <script src="./script.js"></script>
+</body>
+</html>
