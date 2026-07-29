@@ -485,7 +485,9 @@ img {
     display: none;
 }
 
-#intro-story:hover .story-progress,
+/* Hover reveals the seek bar only while paused; the playing rules below take over
+   once playback starts, so :hover must not fight them. */
+#intro-story:hover:not(.is-playing) .story-progress,
 #intro-story:focus-within .story-progress,
 #intro-story.show-controls .story-progress {
     opacity: 1;
@@ -542,9 +544,10 @@ img {
 }
 
 /*
- * While the reel plays, the controls fade out of the way. They come back on hover,
- * on keyboard focus, and — for touch, which has neither — when .show-controls is set
- * by a tap on the tile.
+ * Once the reel is playing every control fades out, including the seek bar. Hover
+ * deliberately does NOT bring them back — the pointer is still on the tile the moment
+ * you click play, so a :hover rule would keep them pinned open. script.js sets
+ * .show-controls on pointer movement instead and clears it after a short pause.
  */
 .story-play,
 .story-audio-wrap {
@@ -552,17 +555,18 @@ img {
 }
 
 #intro-story.is-playing .story-play,
-#intro-story.is-playing .story-audio-wrap {
+#intro-story.is-playing .story-audio-wrap,
+#intro-story.is-playing .story-progress {
     opacity: 0;
     pointer-events: none;
 }
 
-#intro-story.is-playing:hover .story-play,
-#intro-story.is-playing:hover .story-audio-wrap,
 #intro-story.is-playing:focus-within .story-play,
 #intro-story.is-playing:focus-within .story-audio-wrap,
+#intro-story.is-playing:focus-within .story-progress,
 #intro-story.is-playing.show-controls .story-play,
-#intro-story.is-playing.show-controls .story-audio-wrap {
+#intro-story.is-playing.show-controls .story-audio-wrap,
+#intro-story.is-playing.show-controls .story-progress {
     opacity: 0.9;
     pointer-events: auto;
 }

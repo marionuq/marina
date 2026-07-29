@@ -97,22 +97,44 @@ if (story && storyVideo && playButton && storyImage) {
       });
     }
 
-    // Tapping the tile brings faded controls back on touch, where there is no hover.
+    // While playing, the controls are hidden and any pointer activity brings them
+    // back for a moment. A CSS :hover rule cannot do this: the pointer is already on
+    // the tile when play is clicked, so the controls would never fade at all.
+    let hideControlsTimer;
+
+    const revealControls = () => {
+      clearTimeout(hideControlsTimer);
+      tile.classList.add('show-controls');
+      if (!storyVideo.paused) {
+        hideControlsTimer = setTimeout(() => tile.classList.remove('show-controls'), 2000);
+      }
+    };
+
+    const hideControls = () => {
+      clearTimeout(hideControlsTimer);
+      tile.classList.remove('show-controls');
+    };
+
+    tile.addEventListener('pointermove', revealControls);
+    tile.addEventListener('pointerleave', hideControls);
+
+    // Touch has no hover, so a tap on the tile itself reveals them.
     tile.addEventListener('click', (e) => {
-      if (e.target.closest('button, a')) return;
-      tile.classList.toggle('show-controls');
+      if (e.target.closest('button, a, input')) return;
+      revealControls();
     });
 
     storyVideo.addEventListener('play', () => {
       setIcon(true);
       setAudioIcon();
       tile.classList.add('is-playing');
-      tile.classList.remove('show-controls');
+      hideControls(); // fade immediately, even though the pointer is still here
     });
 
     storyVideo.addEventListener('pause', () => {
       setIcon(false);
       tile.classList.remove('is-playing');
+      hideControls();
     });
 
     // If the video will not load, fall back to the still rather than a blank tile.
