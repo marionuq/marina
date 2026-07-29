@@ -1,6 +1,10 @@
 // --- Instagram story tile -------------------------------------------------
-// window.STORY comes from story-data.js. Video stories get a play/pause button;
-// photo stories have nothing to play, so the button stays hidden.
+// window.STORY comes from story-data.js, baked in at build time. Video stories get
+// a play/pause button; photo stories have nothing to play, so it stays hidden.
+//
+// Where a server refreshes the reel at runtime (serve.ts on Railway) it also serves
+// /story/data.json, and hydrateStory() below swaps in the newer media. On a static
+// host that request just 404s and the baked-in reel keeps showing.
 const story = window.STORY;
 const storyVideo = document.querySelector('#story-video');
 const storyImage = document.querySelector('#story-image');
@@ -147,6 +151,40 @@ if (story && storyVideo && playButton && storyImage) {
       tile.classList.remove('is-playing');
     });
   }
+
+  // Ask the server for a fresher reel than the one baked into this build. Anything
+  // other than a 200 — a static host, no token, no reel yet — leaves the page as is.
+  fetch('/story/data.json')
+    // 204 means the server has nothing cached yet, and has an empty body.
+    .then((response) => (response.status === 200 ? response.json() : null))
+    .then((live) => {
+      if (!live || !live.hasStory) return;
+      if (live.timestamp && live.timestamp === story.timestamp) return; // already current
+
+      if (link && live.permalink) link.href = live.permalink;
+      if (live.width && live.height) {
+        tile.style.setProperty('--story-ratio', `${live.width} / ${live.height}`);
+      }
+
+      storyImage.src = '/story/media.jpg';
+
+      if (live.mediaType === 'VIDEO') {
+        storyVideo.src = '/story/media.mp4';
+        storyVideo.poster = '/story/media.jpg';
+        playButton.hidden = false;
+      } else {
+        // A photo reel has nothing to play; make sure a stale video cannot start.
+        storyVideo.pause();
+        storyVideo.removeAttribute('src');
+        storyVideo.hidden = true;
+        storyImage.hidden = false;
+        playButton.hidden = true;
+        tile.classList.remove('is-playing');
+      }
+    })
+    .catch(() => {
+      /* offline or file:// — the baked-in reel is already on screen */
+    });
 }
 
 // --- Sticky call to action ------------------------------------------------

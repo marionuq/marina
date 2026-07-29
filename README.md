@@ -53,10 +53,20 @@ No start command or build command needs setting in the dashboard — the Dockerf
 defines both. `serve.ts` reads `PORT` and binds `0.0.0.0`, which is what Railway
 requires; binding localhost instead is what causes "Application failed to respond".
 
-`.dockerignore` keeps `.env` out of the image. To refresh the Instagram tile on
-Railway, add `IG_USER_ID` and `IG_ACCESS_TOKEN` as service variables and run
-`bun run story:build` from a [Railway cron service](https://docs.railway.com/reference/cron-jobs),
-or keep using the GitHub Action and let Railway redeploy on push.
+`.dockerignore` keeps `.env` out of the image.
+
+### Keeping the reel fresh on Railway
+
+Set `IG_USER_ID` and `IG_ACCESS_TOKEN` as service variables and that is all —
+`serve.ts` re-fetches the newest reel every hour and holds it in memory, serving it
+from `/story/data.json`, `/story/media.jpg` and `/story/media.mp4`. The page asks for
+that on load and swaps the media in. No rebuild, no redeploy, no commits.
+
+`STORY_REFRESH_MINUTES` changes the interval (default `60`).
+
+Without those variables the site still works: it serves whatever reel was baked in at
+build time. Same if the token expires or Instagram is unreachable — the refresh logs
+the failure and the previous reel keeps showing.
 
 ## Instagram tile
 
