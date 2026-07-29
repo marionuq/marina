@@ -488,7 +488,7 @@ img {
 /* Hover reveals the seek bar only while paused; the playing rules below take over
    once playback starts, so :hover must not fight them. */
 #intro-story:hover:not(.is-playing) .story-progress,
-#intro-story:focus-within .story-progress,
+#intro-story:has(:focus-visible) .story-progress,
 #intro-story.show-controls .story-progress {
     opacity: 1;
     pointer-events: auto;
@@ -561,9 +561,9 @@ img {
     pointer-events: none;
 }
 
-#intro-story.is-playing:focus-within .story-play,
-#intro-story.is-playing:focus-within .story-audio-wrap,
-#intro-story.is-playing:focus-within .story-progress,
+#intro-story.is-playing:has(:focus-visible) .story-play,
+#intro-story.is-playing:has(:focus-visible) .story-audio-wrap,
+#intro-story.is-playing:has(:focus-visible) .story-progress,
 #intro-story.is-playing.show-controls .story-play,
 #intro-story.is-playing.show-controls .story-audio-wrap,
 #intro-story.is-playing.show-controls .story-progress {
