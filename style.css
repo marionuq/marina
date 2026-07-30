@@ -12,6 +12,7 @@
 
     --accent: #8ea980;
     --accent-washed: #c3adad; /* --accent blended halfway into --base */
+    --sale: #c97e7e;          /* struck-out prices — muted enough to sit beside --accent */
 
     --band: #e0ecee;         /* --base lifted toward white, for alternating section bands */
     --page-margin: 1.25rem;  /* #main-page's inset — .page-band cancels it to reach the edges.
@@ -868,6 +869,24 @@ main {
     font-weight: 800;
 }
 
+/*
+ * Aside note, styled after a markdown blockquote: accent rule down the left, indented
+ * off it, and quieter than the list it follows so it reads as commentary rather than
+ * another item. Declared after `.facts-text *`, which shares its specificity.
+ */
+.note {
+    max-width: 45rem;
+    margin: 1rem 0 0;
+    padding: 0.75rem 1rem;
+    border-left: 0.25rem solid var(--accent);
+    border-radius: 0 0.5rem 0.5rem 0;
+    background: var(--base);
+    color: var(--muted);
+    font-size: var(--h6);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+}
+
 /* Pair of personal photos — 3/4 matches their native 960x1280, so nothing is cropped */
 .photo-strip {
     display: flex;
@@ -930,6 +949,77 @@ main {
 
 .card-time {
     margin-top: 0.22rem;
+}
+
+/* Price before the package discount. <s> rather than a class alone, so the strike
+   survives with styles off and assistive tech announces it as no longer current.
+   Same pill geometry as .card-price, in red, so the pair reads as before/after. */
+.card-price-was {
+    background: var(--sale);
+    color: var(--text);
+    font-weight: 800;
+    padding: 0.22rem 0.75rem;
+    border-radius: 0.75rem;
+    text-decoration-thickness: 0.09em;
+}
+
+/*
+ * Пакеты встреч — expandable cards. Native <details>, the same approach as the FAQ,
+ * so they open without JS; only the chevron and the height transition are ours.
+ */
+.package-summary {
+    display: flex; /* also suppresses the marker in Chrome and Firefox */
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    cursor: pointer;
+    list-style: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.package-summary::-webkit-details-marker {
+    display: none; /* Safari */
+}
+
+/* The row is four items wide, so let it wrap rather than push the chevron off a phone */
+.package .card-bottom {
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+}
+
+.package-chevron {
+    width: 1.75rem;
+    height: 1.75rem;
+    flex-shrink: 0;
+    color: var(--overlay);
+    transition: transform 300ms ease;
+}
+
+.package[open] .package-chevron {
+    transform: rotate(180deg);
+}
+
+.package-list {
+    margin-top: 1rem;
+}
+
+/* Progressive enhancement: browsers without ::details-content just snap open */
+@supports selector(details::details-content) {
+    .package {
+        interpolate-size: allow-keywords; /* inherited — lets block-size animate to auto */
+    }
+
+    .package::details-content {
+        block-size: 0;
+        overflow: hidden;
+        transition: block-size 300ms ease, content-visibility 300ms;
+        transition-behavior: allow-discrete;
+    }
+
+    .package[open]::details-content {
+        block-size: auto;
+    }
 }
 
 /* Методы работы */
