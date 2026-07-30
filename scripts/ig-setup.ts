@@ -32,7 +32,20 @@ async function api(path: string, params: Record<string, string>) {
 async function res_json(url: URL) {
   const response = await fetch(url);
   const body = await response.json();
-  if (!response.ok) throw new Error(body?.error?.message ?? response.statusText);
+  if (!response.ok) {
+    // An expired token is the routine case here, not a bug — report it plainly
+    // rather than dumping a stack trace.
+    const message: string = body?.error?.message ?? response.statusText;
+    console.error(`\n✗ ${message}`);
+    if (/expire|session/i.test(message)) {
+      console.error("\n  Graph API Explorer tokens last about an hour. To stop this recurring:");
+      console.error("   1. App Dashboard > Settings > Basic — copy the App ID and App Secret");
+      console.error("   2. Put them in .env as FB_APP_ID and FB_APP_SECRET");
+      console.error("   3. Generate a fresh Explorer token, then run this again — it will");
+      console.error("      print a Page token that does not expire at all.");
+    }
+    process.exit(1);
+  }
   return body;
 }
 
@@ -103,8 +116,16 @@ for (const page of pages.data) {
 
   console.log(`Page: ${page.name} (${page.id})`);
   if (business) {
-    console.log(`  IG_USER_ID=${business.id}      # @${business.username}`);
-    console.log(`  Page token (does not expire):\n  ${page.access_token}`);
+    // Printed as a paste-ready block: the three ids in play here (IG account, Page,
+    // Facebook user) look alike, and pasting the wrong one fails confusingly.
+    console.log(`  Instagram account: @${business.username}\n`);
+    console.log("  ---- paste into .env, and into Railway's service variables ----");
+    console.log(`  IG_USER_ID=${business.id}`);
+    console.log(`  IG_ACCESS_TOKEN=${page.access_token}`);
+    console.log("  --------------------------------------------------------------");
+    console.log("  That is the Page token: it has no expiry date, unlike the 1-hour");
+    console.log("  Explorer token. Confirm it reaches the API before relying on it:");
+    console.log(`    bun run ig:check ${page.access_token.slice(0, 12)}...`);
   } else if (connected) {
     console.log(`  connected_instagram_account: ${connected.id} (@${connected.username})`);
     console.log("  ...but instagram_business_account is empty, so /stories will not work.");

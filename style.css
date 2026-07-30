@@ -29,7 +29,7 @@
      *   ~375-800px           → scales with vw
      *   ~800px+ (desktop)    → caps at max
      */
-    --h1: clamp(1.5rem,   6vw,   2rem);    /* hero title:      24px → 32px */
+    --h1: clamp(1.5rem,   6vw,   3.25rem); /* hero title:      24px → 52px, capped ~867px */
     --h3: clamp(1.2rem,   4.5vw, 1.6rem);  /* section titles:  19px → 26px */
     --h4: clamp(1rem,     3.8vw, 1.2rem);  /* card/sub titles: 16px → 19px */
     --h5: clamp(1rem,     3.8vw, 1.2rem);  /* same:            16px → 19px */
@@ -111,13 +111,13 @@ img {
 
 #about-title {
     font-weight: 800;
-    font-size: var(--h4);
-    line-height: 1.4; /* was 1.8rem (fixed) */
+    font-size: var(--h3);
+    line-height: 1.25; /* tighter than the body text, so the two lines sit closer */
 }
 
 #about-description {
     font-size: var(--h6);
-    line-height: 1.6; /* was 1.6rem (fixed) */
+    line-height: 1.4; /* was 1.6rem (fixed) */
     color: var(--subtle);
 }
 
@@ -126,7 +126,7 @@ img {
 }
 
 .description {
-    font-size: var(--h4);
+    font-size: var(--h3);
     color: var(--subtle);
     line-height: 1.45; /* FIX: was 0.45rem (typo) */
 }
@@ -151,16 +151,6 @@ img {
     background: var(--band);
     margin-inline: calc(-1 * var(--page-margin));
     padding: 2rem var(--page-margin);
-}
-
-/*
- * The story tile hangs off #intro into the band directly below it. Reserve its width
- * on that band so the timeline text wraps beside the tile instead of running under it.
- * Because `article` is already capped at 50rem, this only narrows the text when the
- * window is too tight to fit both — on a wide screen nothing moves.
- */
-#intro + .page-band {
-    padding-right: calc(var(--page-margin) + var(--story-gutter));
 }
 
 /* The band's own padding provides the spacing; drop the edge children's margins */
@@ -246,12 +236,12 @@ img {
 }
 
 #avatar {
+    float: left; /* so the bio text wraps beside it, then continues underneath */
     width: 6rem;
     height: 6rem;
     border-radius: 12rem;
-    margin-top: 1rem;
-    margin-left: 1rem;
-    margin-bottom: 1rem;
+    margin: 0 1rem 0.5rem 0;
+    shape-outside: circle(50%); /* the wrap follows the circle, not its square box */
 }
 /* Bio card on the left, story pinned to the right edge; stacks on narrow screens.
    No max-width here — the row spans the page so the story can sit at the far right. */
@@ -273,10 +263,16 @@ img {
 #about {
     flex: 0 0 auto;
     min-width: 0; /* must stay shrinkable, or the card overflows and the photo lands on top of it */
+    /* The mobile rule sets a 100% flex-basis, and content-box would then add the 1rem
+       padding on top of it — 2rem wider than the screen. No-op on desktop, where the
+       card's width is auto and the padding already comes out of the available space. */
+    box-sizing: border-box;
     background: var(--surface);
     border-radius: 0.75rem;
-    display: flex;
-    flex-direction: row;
+    /* flow-root, not flex: text has to wrap around the avatar and carry on beneath it,
+       which only a float can do. flow-root makes the card contain that float. */
+    display: flow-root;
+    padding: 1rem;
 }
 
 /*
@@ -323,6 +319,11 @@ img {
 #intro-photo-3 {
     grid-column: 2;
     grid-row: 2;
+}
+
+/* Only ever shown on phones — see the ≤40rem block, where it partners the reel. */
+#intro-hearts {
+    display: none;
 }
 
 /*
@@ -636,54 +637,73 @@ img {
     }
 }
 
+/*
+ * Phones: reel and hearts share the top row, then the bio card and the buttons each
+ * take a full row of their own beneath them.
+ */
 @media (max-width: 40rem) {
-    /* Card beside story on the first line, buttons wrapping onto the second. */
     #intro {
         flex-wrap: wrap;
     }
 
     /* The story is a sibling of #intro-main while the card and buttons live inside it,
        so they can never share a row. display:contents drops #intro-main's box and
-       promotes its children into this flex container, where they can. */
+       promotes its children into this flex container, where they can be ordered
+       against the story and the hearts photo. */
     #intro-main {
         display: contents;
     }
 
-    #about {
+    #intro-story {
         order: 1;
         flex: 1 1 0;
-        min-width: 0;
-        flex-direction: column; /* avatar above the text, not beside it */
-    }
-
-    #intro-story {
-        order: 2;
-        flex: 1.2 1 0; /* a little wider than the card, as in the design */
         min-width: 0;
         margin-left: 0;
         width: auto;
         /* A 9:16 tile grows ~1.8x its width in height; without this cap it runs to
-           35rem at the top of this range and the card stretches to match it. */
+           35rem at the top of this range and drags the whole row down with it. */
         max-width: 14rem;
     }
 
-    /* 100% basis forces the buttons onto their own line below the pair */
-    #buy {
+    #intro-hearts {
+        display: block;
+        order: 2;
+        flex: 1 1 0;
+        min-width: 0;
+        /* stretch to whatever height the reel settles at, and crop rather than
+           distort — the hearts sit dead centre of the frame, so cover is safe */
+        align-self: stretch;
+        height: auto;
+        object-fit: cover;
+        border-radius: 0.75rem;
+    }
+
+    /* 100% basis puts the card, and then the buttons, on rows of their own */
+    #about {
         order: 3;
+        flex: 0 0 100%;
+        min-width: 0;
+    }
+
+    /* Only ~19rem of text width beside a 6rem avatar here, so stack them instead */
+    #avatar {
+        float: none;
+        margin: 0 0 0.75rem 0;
+    }
+
+    #buy {
+        order: 4;
         flex: 0 0 100%;
         margin-top: 0; /* #intro's row-gap already spaces it */
     }
 
-    .about-text {
-        margin-top: 0;
-    }
 }
 
+/* No margins: #about's padding sets the inset now, and a left margin would push the
+   text away from the floated avatar instead of letting it wrap around it. */
 .about-text {
-    margin-top: -0.75rem;
-    line-height: 1.4; /* was 1rem (fixed and too tight) */
-    margin-left: 0.75rem;
-    margin-bottom: 0.75rem;
+    line-height: 0.5; /* was 1rem (fixed and too tight) */
+    margin-top: -0.35rem; /* lifts the name clear of the card's top padding */
 }
 
 .timeline-dot {
@@ -1188,7 +1208,20 @@ main {
     visibility: visible;
 }
 
+/*
+ * The label and the note flank the button, and an equal flex basis on both is what
+ * puts the *button* on the centre line rather than the group as a whole — the label
+ * is far the wider of the two, so justify-content alone pushes the button right.
+ * Each then aligns toward the button so the gap around it stays even.
+ */
+.sticky-cta-label,
+.sticky-cta-note {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
 .sticky-cta-label {
+    text-align: right;
     font-size: var(--h6);
     font-weight: 800;
     color: var(--base);
@@ -1216,6 +1249,7 @@ main {
 }
 
 .sticky-cta-note {
+    text-align: left;
     font-size: var(--h7);
     color: var(--band);
 }
