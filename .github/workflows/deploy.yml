@@ -3,10 +3,6 @@ name: Build and deploy
 on:
   push:
     branches: [main]
-  # Stories expire after 24h, so rebuild regularly to keep the tile current.
-  # Times are UTC and can be delayed under load — treat this as "roughly hourly".
-  schedule:
-    - cron: "17 * * * *"
   workflow_dispatch: # lets you trigger a rebuild by hand from the Actions tab
 
 permissions:
@@ -29,18 +25,14 @@ jobs:
         with:
           bun-version: latest
 
-      # Refresh the Instagram story. Never fails the build: if the token has expired
-      # or nothing is live, the site still deploys with the previous still in place.
-      - name: Fetch latest story
-        continue-on-error: true
-        env:
-          IG_USER_ID: ${{ secrets.IG_USER_ID }}
-          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
-          IG_PROFILE_URL: https://www.instagram.com/marina_yastrebova_psy
-        run: bun run story
-
       - name: Build
         run: bun run build
+
+      # The custom domain has to travel inside the artifact. `bun build` only emits
+      # what index.html references, so without this copy the deploy would drop the
+      # domain and the site would fall back to the github.io URL.
+      - name: Add custom domain
+        run: cp CNAME dist/CNAME
 
       - uses: actions/upload-pages-artifact@v5
         with:

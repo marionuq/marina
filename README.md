@@ -38,7 +38,53 @@ Writes a minified, content-hashed bundle to `dist/`: the CSS and JS are minified
 and the images in `images/` are copied and fingerprinted, with all paths in the
 HTML rewritten to match. Deploy `dist/` to any static host.
 
+## Deploying to GitHub Pages
+
+This is the primary deployment. `.github/workflows/deploy.yml` builds on every push
+to `main` and publishes `dist/` to Pages; `workflow_dispatch` lets you rebuild by hand
+from the Actions tab.
+
+One-time setup in the repo settings:
+
+1. **Settings → Pages → Source: GitHub Actions.** Until this is set, the deploy job
+   fails with `Failed to create deployment (status: 404)` — the workflow is fine, there
+   is simply nowhere to deploy to.
+2. **Settings → Pages → Custom domain: `yastrebovakids.pro`**, then tick *Enforce HTTPS*
+   once the certificate is issued (it can take up to an hour).
+
+The domain also lives in the `CNAME` file, which the workflow copies into `dist/`.
+Both are needed: the repo setting drives GitHub's certificate provisioning, and the
+file in the artifact is what stops each deploy from resetting the domain.
+
+The repo must be public, or on a paid plan — Pages does not serve private repos on
+the Free plan.
+
+### DNS (Cloudflare)
+
+Replace the Railway CNAME on the apex with GitHub's addresses:
+
+| Type | Name | Value |
+| --- | --- | --- |
+| A | `@` | `185.199.108.153` |
+| A | `@` | `185.199.109.153` |
+| A | `@` | `185.199.110.153` |
+| A | `@` | `185.199.111.153` |
+
+Cloudflare's CNAME flattening also works — a single `CNAME @ → marionuq.github.io`
+— and is easier to keep current.
+
+Set the records to **DNS only** (grey cloud). Proxying breaks GitHub's domain
+verification, so the TLS certificate never provisions and the site stays on an HTTPS
+error. Once *Enforce HTTPS* is on you may re-enable the proxy, but only with SSL/TLS
+mode **Full (strict)**.
+
+Keep the `_railway-verify` TXT record until Railway is shut down; it does not conflict.
+
 ## Deploying to Railway
+
+Kept as a fallback while Pages beds in — not the primary deployment any more. Nothing
+here needs to run for the Pages site to work; delete `Dockerfile`, `.dockerignore` and
+`serve.ts` when you shut the Railway service down.
 
 Railway serves a running container, not a folder of files, so `Dockerfile` builds
 the site and `serve.ts` serves `dist/` on the port Railway injects.
@@ -132,6 +178,13 @@ with a role on the app — fine for a build script you run yourself. Switching t
 to Live Mode requires Meta App Review for those permissions.
 
 ### Keeping it current
+
+> **The tile is not on the page right now** — the markup was removed pending a decision
+> on where to place it. The wiring in `script.js` is guarded and simply does nothing
+> without it, and `deploy.yml` has no scheduled rebuild as a result. Re-add the cron
+> when the tile goes back: on Pages a scheduled rebuild is the only way to refresh it,
+> since the runtime `/story/data.json` fetch needs a server.
+
 
 With `IG_SOURCE=reel` (the default) nothing expires, so the schedule only needs to be
 often enough to pick up a new reel — daily is plenty. With `IG_SOURCE=story` it must
